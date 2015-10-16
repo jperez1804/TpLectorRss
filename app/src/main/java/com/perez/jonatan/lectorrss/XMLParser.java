@@ -1,5 +1,6 @@
 package com.perez.jonatan.lectorrss;
 
+import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -41,9 +42,11 @@ public class XMLParser {
             e.printStackTrace();
         }
 
+        Noticia noticia = null;
+        boolean estoyEnUnItem=false;
         while (event != XmlPullParser.END_DOCUMENT) {
-            Noticia noticia = null;
-            boolean estoyEnUnItem=false;
+
+
             switch (event) {
                 case XmlPullParser.START_DOCUMENT:
 
@@ -54,16 +57,19 @@ public class XMLParser {
 
                     String tag = parser.getName();
 
+                    Log.d("parser", "encontre el tag:" + tag);
+
                     if (tag.equals("item"))
                     {
+                        Log.d("parser", "empieza el item");
                         estoyEnUnItem = true;
 
                     }
                     if (tag.equals("title") && estoyEnUnItem) {
 
-
                         noticia = new Noticia();
                         try {
+                            Log.d("parser", "estoy seteando el tittle");
                             noticia.setTxtTitulo(parser.nextText());
                         } catch (XmlPullParserException e) {
                             e.printStackTrace();
@@ -74,7 +80,6 @@ public class XMLParser {
 
                     if (tag.equals("link") && estoyEnUnItem) {
 
-                        noticia = new Noticia();
                         try {
                             noticia.setLink(parser.nextText());
                         } catch (XmlPullParserException e) {
@@ -86,7 +91,7 @@ public class XMLParser {
 
                     if (tag.equals("description") && estoyEnUnItem) {
 
-                        noticia = new Noticia();
+
                         try {
                             noticia.setTxtDescripcion(parser.nextText());
                         } catch (XmlPullParserException e) {
@@ -98,7 +103,7 @@ public class XMLParser {
 
                     if (tag.equals("pubDate") && estoyEnUnItem) {
 
-                        noticia = new Noticia();
+
                         try {
                             noticia.setTxtFecha(parser.nextText());
                         } catch (XmlPullParserException e) {
@@ -110,7 +115,7 @@ public class XMLParser {
 
                     if (tag.equals("media:thumbnail") && estoyEnUnItem) {
 
-                        noticia = new Noticia();
+
                         try {
                             noticia.setTxtTitulo(parser.nextText());
                         } catch (XmlPullParserException e) {
@@ -121,26 +126,29 @@ public class XMLParser {
 
                     }
 
-                    break;
-                case XmlPullParser.END_TAG:
+break;
+        case XmlPullParser.END_TAG:
 
-                    if(parser.getName().equals("item"))
-                    {
-                        lista.add(noticia);
-                        estoyEnUnItem = false;
-                    }
-
-                    break;
-            }
-
-            try {
-                event = parser.next();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if(parser.getName().equals("item"))
+        {
+        lista.add(noticia);
+            noticia = null;
+        estoyEnUnItem = false;
         }
+
+        break;
+        }
+
+        try {
+        event = parser.next();
+        } catch (XmlPullParserException e) {
+        e.printStackTrace();
+        } catch (IOException e) {
+        e.printStackTrace();
+        }
+        }
+
+        Log.d("xmlparser", "toy retornando la lista");
 
         return lista;
     }

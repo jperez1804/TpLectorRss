@@ -25,12 +25,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Handler.Callback {
+public class MainActivity extends AppCompatActivity implements Handler.Callback, View.OnClickListener {
 
     private Handler handler = null;
     private RecyclerView rv = null;
@@ -42,6 +46,12 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        EditText urlText = (EditText)this.findViewById(R.id.editText);
+        Button button = (Button)this.findViewById(R.id.buttonPanel);
+
+
+
+        //button.setOnClickListener(this);
 
         this.rv = (RecyclerView)findViewById(R.id.list);
 
@@ -53,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
 
         //http://192.168.2.57:8080/personas.xml
         //http://www.lslutnfra.com/alumnos/practicas/personas.csv
+        //http://rss.cnn.com/rss/edition.rss
+        //http://www.infobae.com/rss/hoy.xml
         ThreadConexion hiloConexion = new ThreadConexion("http://rss.cnn.com/rss/edition.rss", handler);
 
         Thread hilo = new Thread(hiloConexion);
@@ -86,9 +98,10 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     @Override
     public boolean handleMessage(Message msg) {
 
-
-
         if ( msg.arg1 == 0 ) {
+
+
+
             listaNoticias = (List<Noticia>) msg.obj;
             this.adapter = new MyAdapter((List<Noticia>) msg.obj, handler);
             rv.setAdapter(this.adapter);
@@ -106,5 +119,8 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback 
     }
 
 
+    @Override
+    public void onClick(View v) {
 
+    }
 }
